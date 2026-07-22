@@ -25,20 +25,6 @@ jobs:
 
     - name: Build APK with Buildozer
       run: |
-        # Əmin oluruq ki, işlədiyimiz yer layihənin kök qovluğudur
-        cd ${{ github.workspace }}
-        
-        # Əgər spec faylı yoxdursa yaradırıq
-        if [ ! -f "buildozer.spec" ]; then
-            buildozer init
-        fi
-        
-        sed -i 's/^requirements = .*/requirements = python3,kivy,requests,beautifulsoup4/' buildozer.spec
-        sed -i 's/#android.api =.*/android.api = 33/' buildozer.spec
-        sed -i 's/#android.minapi =.*/android.minapi = 21/' buildozer.spec
-        sed -i 's/#android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
-
-        # Root xətasını ötürərək işə salırıq
         echo "y" | buildozer -v android debug
 
     - name: Upload APK
