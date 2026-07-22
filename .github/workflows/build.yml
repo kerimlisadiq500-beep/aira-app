@@ -16,24 +16,19 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install dependencies
+    - name: Install minimal dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev tk-dev libxss1 aapt
+        sudo apt-get install -y openjdk-17-jdk unzip git
         pip install --upgrade pip
-        pip install --upgrade buildozer cython
+        pip install buildozer cython
 
     - name: Build with Buildozer
       run: |
-        # Əvvəlcə spec faylını yaradırıq
         buildozer init
-        
-        # Spec faylında tələbləri və API versiyalarını səliqəyə salırıq
         sed -i 's/^requirements = .*/requirements = python3,kivy,requests,beautifulsoup4/' buildozer.spec
         sed -i 's/#android.api =.*/android.api = 33/' buildozer.spec
         sed -i 's/#android.minapi =.*/android.minapi = 21/' buildozer.spec
-
-        # Buildozer-i başladırıq (sdkmanager xətasını aşmaq üçün birbaşa debug komandası)
         buildozer -v android debug
 
     - name: Upload APK
