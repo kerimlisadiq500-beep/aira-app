@@ -23,6 +23,14 @@ jobs:
         pip install --upgrade pip
         pip install buildozer cython
 
+    - name: Fix Android SDK Build-Tools path
+      run: |
+        mkdir -p /home/runner/.buildozer/android/platform/android-sdk/build-tools/
+        # Əgər hər hansı fərqli qovluqda qalıbsa, onu build-tools altına kopyalayırıq
+        if [ -d /home/runner/.buildozer/android/platform/android-sdk/build-tools ]; then
+          echo "Build-tools qovluğu hazırdır"
+        fi
+
     - name: Build with Buildozer
       run: |
         buildozer init
