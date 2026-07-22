@@ -16,19 +16,23 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Install minimal dependencies
+    - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y openjdk-17-jdk unzip git
+        sudo apt-get install -y openjdk-17-jdk unzip git zip libltdl-dev libffi-dev libssl-dev
         pip install --upgrade pip
         pip install buildozer cython
 
-    - name: Build with Buildozer
+    - name: Initialize Buildozer Spec
       run: |
         buildozer init
         sed -i 's/^requirements = .*/requirements = python3,kivy,requests,beautifulsoup4/' buildozer.spec
         sed -i 's/#android.api =.*/android.api = 33/' buildozer.spec
         sed -i 's/#android.minapi =.*/android.minapi = 21/' buildozer.spec
+        sed -i 's/#android.accept_sdk_license = False/android.accept_sdk_license = True/' buildozer.spec
+
+    - name: Build APK with Buildozer
+      run: |
         buildozer -v android debug
 
     - name: Upload APK
