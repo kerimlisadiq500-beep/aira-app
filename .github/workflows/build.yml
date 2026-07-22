@@ -21,14 +21,20 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev libsqlite3-dev tk-dev libxss1 aapt
         pip install --upgrade pip
-        pip install buildozer cython
+        pip install --upgrade buildozer cython
 
     - name: Build with Buildozer
       run: |
+        # Əvvəlcə spec faylını yaradırıq
         buildozer init
+        
+        # Spec faylında tələbləri və API versiyalarını səliqəyə salırıq
         sed -i 's/^requirements = .*/requirements = python3,kivy,requests,beautifulsoup4/' buildozer.spec
-        # Əlavə olaraq Android lisenziyalarını avtomatik qəbul etmək üçün
-        yes | buildozer -v android debug
+        sed -i 's/#android.api =.*/android.api = 33/' buildozer.spec
+        sed -i 's/#android.minapi =.*/android.minapi = 21/' buildozer.spec
+
+        # Buildozer-i başladırıq (sdkmanager xətasını aşmaq üçün birbaşa debug komandası)
+        buildozer -v android debug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
